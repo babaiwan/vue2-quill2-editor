@@ -1,14 +1,14 @@
 import QuillBetterTable from './betterTable/quill-better-table'
 import ImageResize from './ImageResize/ImageResize'
 import HtmlManager from './HtmlManager/htmlManager'
-import { MSWORD_MATCHERS } from './ClipBoard/matcher'
+import {MSWORD_MATCHERS} from './ClipBoard/matcher'
 import hljs from 'highlight.js'
-import { registerFontSize } from './Font/fontSize'
-import { registerFontFamily } from './Font/fontFamily'
-import { registerLineHeight } from './LineHeight/lineHeight'
-import { registerTextIndent } from './Indent/Indent'
+import {registerFontSize} from './Font/fontSize'
+import {registerFontFamily} from './Font/fontFamily'
+import {registerLineHeight} from './LineHeight/lineHeight'
+import {registerTextIndent} from './Indent/Indent'
 import ImageUploader from './ImageUploader/quill.imageUploader'
-import { registerImageBlot } from './ImageUploader/loadingImage'
+import {registerImageBlot} from './ImageUploader/loadingImage'
 import Quill from "quill";
 
 function registerImageUploader(Quill) {
@@ -16,7 +16,7 @@ function registerImageUploader(Quill) {
 }
 
 function registerTable(Quill) {
-    Quill.register({ 'modules/better-table': QuillBetterTable }, true)
+    Quill.register({'modules/better-table': QuillBetterTable}, true)
 }
 
 function registerImageResize(Quill) {
@@ -65,7 +65,7 @@ function registerColor(Quill) {
         }
 
         static value(node) {
-            return { text: node.outerText, color: node.style.color }
+            return {text: node.outerText, color: node.style.color}
         }
     }
 
