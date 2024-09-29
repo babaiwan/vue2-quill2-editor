@@ -218,9 +218,9 @@ export default {
       type: Function,
       required: false
     },
-    uploadParams: {
+    uploadParams:{
       type: Object,
-      default: () => ({})
+      required: false
     }
   },
   data() {
@@ -251,7 +251,7 @@ export default {
               vm.uploadFunction(params).then(json => {
                 const Delta = Quill.import('delta')
                 const cursorPosition = vm.quill.getSelection().index
-                vm.quill.updateContents(new Delta().retain(cursorPosition).delete(3).insert({image:json.data.data}));
+                vm.quill.updateContents(new Delta().retain(cursorPosition).delete(3).insert({image: json.data.data}));
                 vm.quill.setSelection(cursorPosition + 1, 0)
               })
             }
@@ -266,8 +266,29 @@ export default {
       this.$refs.fileInput.click();
     },
     handleFileChange(event) {
+      let vm = this
       const file = event.target.files[0];
-      // 处理文件
+      const fileName = file.name.toString()
+      var reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = function (evt) {
+        let fileString = evt.target.result
+        if (!file) {
+          this.$pop('请选择文件')
+        } else {
+          const params = {
+            ...this.uploadParams,
+            fileName: fileName,
+            fileContent: fileString
+          };
+          vm.uploadFunction(params).then(json => {
+            const Delta = Quill.import('delta')
+            const cursorPosition = vm.quill.getSelection().index
+            vm.quill.updateContents(new Delta().retain(cursorPosition).delete(3).insert({image: json.data.data}));
+            vm.quill.setSelection(cursorPosition + 1, 0)
+          })
+        }
+      }
     },
     handleColorChange(val) {
       this.quill.format('color', val);      // val =  #ffff  || red ....
