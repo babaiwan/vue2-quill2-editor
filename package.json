@@ -10,11 +10,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "quill": "^2.0.2",
-    "vue": "^2.7.16"
-  },
   "peerDependencies": {
+    "vue": "^2.7.16",
+    "quill": "^2.0.2",
     "ep-ui": "^2.10.28",
     "vcolorpicker": "^1.1.0",
     "v-viewer": "^1.6.4",
@@ -25,6 +23,7 @@
     "@babel/preset-env": "^7.25.4",
     "@rollup/plugin-commonjs": "^28.0.0",
     "@rollup/plugin-node-resolve": "^15.3.0",
+    "axios": "^1.7.7",
     "babel-loader": "^9.2.1",
     "css-loader": "^7.1.2",
     "file-loader": "^6.2.0",

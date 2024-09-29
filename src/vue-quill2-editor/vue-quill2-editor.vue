@@ -207,6 +207,8 @@ Vue.use(vcolorpicker)
 // 注册自定义插件
 import {initEpEditor, defaultOption} from "./quillRegister";
 
+import axios from "axios";
+
 initEpEditor(Quill)
 
 export default {
@@ -249,16 +251,8 @@ export default {
               vm.uploadFunction(params).then(json => {
                 const Delta = Quill.import('delta')
                 const cursorPosition = vm.quill.getSelection().index
-                const newlineChar = '\n'
-                const numNewlines = 2 // Number of newlines to insert
-                let deltaOps = []
-                for (let i = 0; i < numNewlines; i++) {
-                  deltaOps.push({insert: newlineChar, linebreak: true})
-                }
-                deltaOps.push({insert: {attachment: json.data}})
-                const newDelta = new Delta().retain(cursorPosition).insert(deltaOps)
-                vm.quill.updateContents(newDelta)
-                vm.quill.setSelection(cursorPosition + numNewlines + 1, 0)
+                vm.quill.updateContents(new Delta().retain(cursorPosition).delete(3).insert({image:json.data.data}));
+                vm.quill.setSelection(cursorPosition + 1, 0)
               })
             }
           }
