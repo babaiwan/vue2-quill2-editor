@@ -1,4 +1,4 @@
-import VueQuill2Editor from './vue-quill2-editor.vue';
+import VueQuill2Editor from './vue-quill2-editor/vue-quill2-editor.vue';
 
 const MyComponent = {
     install(Vue) {
