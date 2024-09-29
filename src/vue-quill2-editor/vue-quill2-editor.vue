@@ -132,7 +132,6 @@
                   </button>
                 </ep-popover>
       </span>
-
       <span class="ql-formats">
         <button class="ql-indent" value="+1" type="button"></button>
         <button class="ql-indent" value="-1" type="button"></button>
@@ -178,9 +177,8 @@
           </svg>
         </button>
       </span>
-
-      <span class="ql-formats" style="min-width: 112px; position: relative">
-        <button @click="triggerUpload">上传附件</button>
+      <span class="ql-formats" style="min-width: 120px; position: relative">
+        <button style="min-width: 45px;" @click="triggerUpload">附件</button>
         <input type="file" ref="fileInput" style="display: none;" @change="handleFileChange">
       </span>
     </div>
@@ -228,44 +226,40 @@ export default {
   },
   mounted() {
     let vm = this
-    let option = Object.assign(defaultOption, {
-      modules: {
-        imageUploader: {
-          upload: (files) => {
-            return new Promise((resolve, reject) => {
-              const fileName = files.name.toString()
-              var reader = new FileReader()
-              reader.readAsDataURL(files)
-              reader.onload = function (evt) {
-                let fileString = evt.target.result
-                if (!files) {
-                  this.$pop('请选择文件')
-                } else {
-                  vm.uploadFunction({
-                    fileName: fileName,
-                    fileContent: fileString
-                  }).then(json => {
-                    const Delta = Quill.import('delta')
-                    const cursorPosition = this.quill.getSelection().index
-                    const newlineChar = '\n'
-                    const numNewlines = 2 // Number of newlines to insert
-                    let deltaOps = []
-                    for (let i = 0; i < numNewlines; i++) {
-                      deltaOps.push({insert: newlineChar, linebreak: true})
-                    }
-                    deltaOps.push({insert: {attachment: json.data}})
-                    const newDelta = new Delta().retain(cursorPosition).insert(deltaOps)
-                    this.quill.updateContents(newDelta)
-                    this.quill.setSelection(cursorPosition + numNewlines + 1, 0)
-                  })
+    defaultOption.modules.imageUploader = {
+      upload: (files) => {
+        return new Promise((resolve, reject) => {
+          const fileName = files.name.toString()
+          var reader = new FileReader()
+          reader.readAsDataURL(files)
+          reader.onload = function (evt) {
+            let fileString = evt.target.result
+            if (!files) {
+              this.$pop('请选择文件')
+            } else {
+              vm.uploadFunction({
+                fileName: fileName,
+                fileContent: fileString
+              }).then(json => {
+                const Delta = Quill.import('delta')
+                const cursorPosition = this.quill.getSelection().index
+                const newlineChar = '\n'
+                const numNewlines = 2 // Number of newlines to insert
+                let deltaOps = []
+                for (let i = 0; i < numNewlines; i++) {
+                  deltaOps.push({insert: newlineChar, linebreak: true})
                 }
-              }
-            })
+                deltaOps.push({insert: {attachment: json.data}})
+                const newDelta = new Delta().retain(cursorPosition).insert(deltaOps)
+                this.quill.updateContents(newDelta)
+                this.quill.setSelection(cursorPosition + numNewlines + 1, 0)
+              })
+            }
           }
-        }
+        })
       }
-    })
-    this.quill = new Quill('#editor', option);
+    }
+    this.quill = new Quill('#editor', defaultOption);
   },
   methods: {
     triggerUpload() {
