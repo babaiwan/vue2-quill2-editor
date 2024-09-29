@@ -5,10 +5,13 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
     mode: 'development',
-    entry: './dev/main.js', // 开发入口文件
+    entry: './src/index.js', // 开发入口文件
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js',
+        filename: 'VueQuill2Editor.js',
+        library: 'VueQuill2Editor',
+        libraryTarget: 'umd',
+        umdNamedDefine: true,
     },
     resolve: {
         alias: {

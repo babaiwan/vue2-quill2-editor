@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import VueQuill2Editor from '../src/index'; // 引入你写的插件
+import VueQuill2Editor from '../src'; // 引入你写的插件
 
 Vue.use(VueQuill2Editor); // 安装插件
 

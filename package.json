@@ -1,22 +1,24 @@
 {
-  "name": "vue-quill2-editor",
-  "version": "1.0.0",
+  "name": "vue2-quill2-editor",
+  "version": "1.0.9",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "build": "rollup -c",
+    "build": "webpack --config webpack.config.js",
     "serve": "webpack serve --config webpack.config.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ep-ui": "^2.10.28",
-    "highlight.js": "^11.10.0",
     "quill": "^2.0.2",
-    "v-viewer": "^1.6.4",
-    "vcolorpicker": "^1.1.0",
     "vue": "^2.7.16"
+  },
+  "peerDependencies": {
+    "ep-ui": "^2.10.28",
+    "vcolorpicker": "^1.1.0",
+    "v-viewer": "^1.6.4",
+    "highlight.js": "^11.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

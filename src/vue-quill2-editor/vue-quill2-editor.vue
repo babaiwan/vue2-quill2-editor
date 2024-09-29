@@ -215,6 +215,10 @@ export default {
     uploadFunction: {
       type: Function,
       required: false
+    },
+    uploadParams: {
+      type: Object,
+      default: () => ({})
     }
   },
   data() {
@@ -237,12 +241,14 @@ export default {
             if (!files) {
               this.$pop('请选择文件')
             } else {
-              vm.uploadFunction({
+              const params = {
+                ...this.uploadParams,
                 fileName: fileName,
                 fileContent: fileString
-              }).then(json => {
+              };
+              vm.uploadFunction(params).then(json => {
                 const Delta = Quill.import('delta')
-                const cursorPosition = this.quill.getSelection().index
+                const cursorPosition = vm.quill.getSelection().index
                 const newlineChar = '\n'
                 const numNewlines = 2 // Number of newlines to insert
                 let deltaOps = []
@@ -251,8 +257,8 @@ export default {
                 }
                 deltaOps.push({insert: {attachment: json.data}})
                 const newDelta = new Delta().retain(cursorPosition).insert(deltaOps)
-                this.quill.updateContents(newDelta)
-                this.quill.setSelection(cursorPosition + numNewlines + 1, 0)
+                vm.quill.updateContents(newDelta)
+                vm.quill.setSelection(cursorPosition + numNewlines + 1, 0)
               })
             }
           }
