@@ -217,9 +217,9 @@ export default {
       type: Function,
       required: false
     },
-    uploadParams: {
-      type: Object,
-      default: () => ({})
+    uploadResponseHandlers: {
+      type: Function,
+      required: false
     }
   },
   data() {
@@ -244,14 +244,13 @@ export default {
               this.$pop('请选择文件')
             } else {
               const params = {
-                ...this.uploadParams,
                 fileName: fileName,
                 fileContent: fileString
               };
               vm.uploadFunction(params).then(json => {
                 const Delta = Quill.import('delta')
                 const cursorPosition = vm.quill.getSelection().index
-                vm.quill.updateContents(new Delta().retain(cursorPosition).insert({image:json.data.data}));
+                vm.quill.updateContents(new Delta().retain(cursorPosition).insert({image: vm.uploadResponseHandlers(json)}));
                 vm.quill.setSelection(cursorPosition + 1, 0)
               })
 
