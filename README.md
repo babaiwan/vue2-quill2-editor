@@ -4,6 +4,7 @@
   <div class="demo">
     <vue-quill2-editor
       :upload-function="uploadFunction"
+      :upload-response-handlers="uploadResponseHandlers"
     >
     </vue-quill2-editor>
   </div>
@@ -19,8 +20,7 @@ Vue.use(VueQuillEditor)
 export default {
   components: {VueQuillEditor},
   data() {
-    return {
-    }
+    return {}
   },
   methods: {
     uploadFunction(params) {
@@ -28,12 +28,16 @@ export default {
         'eptoken': '7856456e-7b5d-4f3a-be37-a98d0ba51d8d',
         'Content-Type': 'application/json'
       }
-      const uploadParams = Object.assign(params,{
+      const uploadParams = Object.assign(params, {
         linkId: '999',
         linkType: 'journal',
         inText: 1
       })
       return axios.post('http://localhost:8090/file/upload', uploadParams, {headers})
+    },
+    uploadResponseHandlers(val) {
+      debugger
+      return val.data.data   // return where is the url
     }
   }
 }
