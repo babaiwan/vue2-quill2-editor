@@ -220,7 +220,8 @@ export default {
     uploadResponseHandlers: {
       type: Function,
       required: false
-    }
+    },
+    value: String,
   },
   data() {
     return {
@@ -253,6 +254,16 @@ export default {
       }
     }
     this.quill = new Quill('#editor', defaultOption);
+    this.quill.enable(false)
+
+    // Set editor content
+    if (this.value || this.content) {
+      this.quill.clipboard.dangerouslyPasteHTML(this.value || this.content)
+    }
+
+    // Emit ready event
+    this.quill.enable(true)
+    this.$emit('ready', this.quill)
   },
   methods: {
     triggerUpload() {
