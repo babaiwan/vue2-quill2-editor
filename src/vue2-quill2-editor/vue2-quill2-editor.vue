@@ -233,45 +233,22 @@ export default {
     let vm = this
     defaultOption.modules.uploader = {
       handler: (range, fileList) => {
-        let files = fileList[0]
+        let file = fileList[0]
         return new Promise((resolve, reject) => {
-          const fileName = files.name.toString()
-          var reader = new FileReader()
-          reader.readAsDataURL(files)
-          reader.onload = function (evt) {
-            let fileString = evt.target.result
-            if (!files) {
-              this.$pop('请选择文件')
-            } else {
-              const params = {
-                fileName: fileName,
-                fileContent: fileString
-              };
-              vm.uploadFunction(params).then(json => {
-                const Delta = Quill.import('delta')
-                const cursorPosition = vm.quill.getSelection().index
-                vm.quill.updateContents(new Delta().retain(cursorPosition).insert({image: vm.uploadResponseHandlers(json)}));
-                vm.quill.setSelection(cursorPosition + 1, 0)
-              })
+          const fileName = file.name.toString()
 
-              // const headers = {
-              //   'eptoken': '7856456e-7b5d-4f3a-be37-a98d0ba51d8d',
-              //   'Content-Type': 'application/json'
-              // }
-              // axios.post('http://localhost:8090/file/upload', {
-              //   linkId: '999',
-              //   linkType: 'journal',
-              //   fileName: fileName,
-              //   fileContent: fileString,
-              //   inText: 1
-              // }, {headers}).then(json => {
-              //   const Delta = Quill.import('delta')
-              //   const cursorPosition = vm.quill.getSelection().index
-              //   vm.quill.updateContents(new Delta().retain(cursorPosition).insert({image:json.data.data}));
-              //   vm.quill.setSelection(cursorPosition + 1, 0)
-              // })
-            }
-          }
+          // 使用FormData构建请求
+          const formData = new FormData();
+          formData.append("file", file); // 添加文件
+          formData.append("fileName", fileName);
+
+          vm.uploadFunction(formData).then(json => {
+            const Delta = Quill.import('delta')
+            const cursorPosition = vm.quill.getSelection().index
+            vm.quill.updateContents(new Delta().retain(cursorPosition).insert({image: vm.uploadResponseHandlers(json)}));
+            vm.quill.setSelection(cursorPosition + 1, 0)
+          })
+
         })
       }
     }
