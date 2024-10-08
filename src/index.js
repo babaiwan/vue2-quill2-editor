@@ -13,8 +13,9 @@ const MyComponent = {
     }
 };
 
-export default MyComponent;
-
+// 在 UMD 环境下安装插件
 if (typeof window !== 'undefined' && window.Vue) {
     window.Vue.use(MyComponent);
 }
+
+export default MyComponent;

@@ -8,7 +8,7 @@ module.exports = {
     entry: './src/index.js', // 开发入口文件   本地调试 /dev/index.js  打包后  /src/index.js
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'Vue2Quill2Editor.js',
+        filename: 'index.js',
         library: 'Vue2Quill2Editor',
         libraryTarget: 'umd',
         umdNamedDefine: true,

@@ -2,41 +2,41 @@
 ```
 <template>
   <div class="demo">
-    <vue-quill2-editor
+    <vue2-quill2-editor
       :upload-function="uploadFunction"
       :upload-response-handlers="uploadResponseHandlers"
     >
-    </vue-quill2-editor>
+    </vue2-quill2-editor>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import Vue from 'vue'
-import VueQuillEditor from 'vue2-quill2-editor/dist/VueQuill2Editor'
+import Editor from 'vue2-quill2-editor/dist/index'
 
-Vue.use(VueQuillEditor)
+Vue.use(Editor)
 
 export default {
-  components: {VueQuillEditor},
+  components: {Editor},
   data() {
     return {}
   },
   methods: {
-    uploadFunction(params) {
+    uploadFunction(formData) {
       const headers = {
         'eptoken': '7856456e-7b5d-4f3a-be37-a98d0ba51d8d',
         'Content-Type': 'application/json'
       }
-      const uploadParams = Object.assign(params, {
-        linkId: '999',
-        linkType: 'journal',
-        inText: 1
-      })
-      return axios.post('http://localhost:8090/file/upload', uploadParams, {headers})
+
+      // 业务字段(按需添加)
+      formData.append("linkId", "999"); // 示例 linkId
+      formData.append("linkType", "journal"); // 示例 linkType
+      formData.append("inText", 1); // 示例 inText
+
+      return axios.post('http://localhost:8090/file/upload', formData, {headers})
     },
     uploadResponseHandlers(val) {
-      debugger
       return val.data.data   // return where is the url
     }
   }
