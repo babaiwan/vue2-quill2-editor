@@ -211,7 +211,7 @@ import {initEpEditor, defaultOption} from "./quillRegister";
 initEpEditor(Quill)
 
 export default {
-  name: "vue-quill2-editor",
+  name: "vue2-quill2-editor",
   props: {
     uploadFunction: {
       type: Function,

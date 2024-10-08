@@ -1,4 +1,4 @@
-import VueQuill2Editor from './vue-quill2-editor/vue-quill2-editor.vue';
+import Vue2Quill2Editor from './vue2-quill2-editor/vue2-quill2-editor.vue';
 import epui from 'ep-ui';
 import vcolorpicker from 'vcolorpicker';
 
@@ -9,7 +9,7 @@ const MyComponent = {
         Vue.use(vcolorpicker);
 
         // 注册组件
-        Vue.component('VueQuill2Editor', VueQuill2Editor);
+        Vue.component('Vue2Quill2Editor', Vue2Quill2Editor);
     }
 };
 
