@@ -5,7 +5,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
     mode: 'development',
-    entry: './dev/index.js', // 开发入口文件   本地调试 /dev/index.js  打包后  /src/index.js
+    entry: './src/index.js', // 开发入口文件   本地调试 /dev/index.js  打包后  /src/index.js
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'index.js',
