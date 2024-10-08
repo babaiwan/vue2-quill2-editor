@@ -69,68 +69,105 @@
         <button class="ql-list" value="bullet" type="button"></button>
       </span>
       <span class="ql-formats">
-        <ep-popover ref="tableGenerator" placement="bottom" width="250" trigger="hover">
-                  <div>
-                    <div id="md-table-gen-wrap" class="table_size_chooser" ref="md-table-gen-wrap">
-                      <div class="SizeChooser">
-                        <span id="md-table-info">选择Table的行列</span>
-                        <table id="md-table-gen-chooser" ref="md-table-gen-chooser">
-                          <tbody>
-                            <tr v-for="row in tableSize[0]">
-                              <td
-                                  v-for="cell in tableSize[1]"
-                                  :ref="'md-table-cell-row-' + row + '-cell-' + cell"
-                                  @mouseenter="hoverTableCell(row, cell)"
-                                  @click="insertTable(row, cell)"
-                              ></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                  <button slot="reference" type="button">
-                    <svg
-                        t="1628759217740"
-                        class="icon"
-                        viewBox="0 0 1024 1024"
-                        version="1.1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        p-id="2162"
-                        width="16"
-                        height="16"
-                    >
-                      <path
-                          d="M918.016 119.986H105.984c-23.197 0-42.002 18.803-42.002 42v700.029c0 23.196 18.805 42 42.002 42h812.032c23.195 0 42.002-18.803 42.002-42V161.986c0-23.197-18.807-42-42.002-42z m0 168.005v164.135H675.339V287.991H918.016zM390.661 657.474V494.127h242.677v163.347H390.661z m242.678 42.002v162.538H390.661V699.476h242.678zM348.66 657.474H105.983V494.127H348.66v163.347z m284.679-369.483v164.135H390.661V287.991h242.678z m42 206.136h242.677v163.347H675.339V494.127zM399.996 161.986c23.197 0 42.002 18.803 42.002 42.003 0 23.196-18.805 42-42.002 42s-42.003-18.803-42.003-42c0-23.199 18.806-42.003 42.003-42.003z m-126.005 0c23.195 0 42.002 18.803 42.002 42.003 0 23.196-18.806 42-42.002 42-23.198 0-42.003-18.803-42.003-42 0.001-23.199 18.805-42.003 42.003-42.003z m-126.005 0c23.195 0 42.002 18.803 42.002 42.003 0 23.196-18.806 42-42.002 42-23.198 0-42.003-18.803-42.003-42 0.001-23.199 18.805-42.003 42.003-42.003z m0 126.005H348.66v164.135H105.983l0.001-164.135h42.002z m-42.002 411.485h242.677v162.538H105.984V699.476z m569.355 162.538V699.476h242.677v162.538H675.339z"
-                          fill=""
-                          p-id="2163"
-                      ></path>
-                    </svg>
-                  </button>
-                </ep-popover>
-                <button class="ql-color-picker" type="button">
-                  <colorPicker v-model="color" v-on:change="handleColorChange"/>
-                </button>
-                <ep-popover placement="top" trigger="hover">
-                  <div style="width: 120px;font-size: 12px;height: 32px">清除样式</div>
-                  <button slot="reference" @click="deleteFormat" type="button">
-                    <svg
-                        t="1640141890477"
-                        class="icon"
-                        viewBox="0 0 1024 1024"
-                        version="1.1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        p-id="2896"
-                        width="14"
-                        height="14"
-                    >
-                      <path
-                          d="M876.564398 512.149985h30.697002c7.699248 0 15.398496 0 22.997754-2.599746 33.296748-8.999121 46.095498-43.495752 37.096378-104.889757-3.799629-28.197246-24.297627-46.095498-54.99463-46.095498H614.290011v-24.297627c0-65.293624-3.799629-130.487257 0-195.780881C616.889757 75.792598 589.992384 18.198223 537.49751 2.899717c-15.398496-3.799629-38.39625-3.799629-51.195 0C458.105263 13.098721 421.008886 39.996094 413.409628 79.692218c-2.599746 12.79875-3.799629 24.297627-3.799629 35.796504v243.076262H113.938873c-40.896006 0-60.094131 19.198125-60.094131 61.394004v7.699249c0 72.892882 7.699248 80.59213 80.592129 84.491748 2.599746 0 6.399375 1.299873 10.199004 1.299873-28.197246 145.885753-56.294502 290.471634-86.991504 435.057514-7.699248 35.796504 0 62.693878 30.697002 75.492628h844.417537c29.397129-12.79875 38.39625-38.39625 31.996876-72.892882-30.597012-145.985744-58.794258-290.571624-88.191388-438.957133zM509.300264 54.094717c31.996875 0 52.494874 22.997754 52.494873 61.394005 0 74.192755 1.299873 147.185626 1.299873 221.378381v21.797871H459.405136V115.488722c0-37.096377 19.198125-60.194122 49.895128-61.394005zM102.439996 460.954985v-51.195001h818.820037V460.954985H102.439996z m200.880383 511.750024c8.999121-63.993751 17.898252-133.087003 26.897373-199.580509 1.299873-11.498877 2.599746-21.797871 3.799629-31.996876 1.299873-15.398496-3.799629-28.197246-19.198125-30.697002-17.898252-2.599746-28.197246 6.399375-30.697002 22.997754-6.399375 42.195879-11.498877 83.191876-17.898252 125.387755-3.799629 37.096377-8.999121 75.492628-14.098624 113.888878H103.739869c33.296748-153.585001 66.493506-307.070013 101.090128-460.655014h610.340397c33.296748 153.585001 66.493506 307.070013 101.090127 460.655014h-612.940142z"
-                          p-id="2897"
-                      ></path>
-                    </svg>
-                  </button>
-                </ep-popover>
+<!--        <ep-popover ref="tableGenerator" placement="bottom" width="250" trigger="hover">-->
+        <!--                  <div>-->
+        <!--                    <div id="md-table-gen-wrap" class="table_size_chooser" ref="md-table-gen-wrap">-->
+        <!--                      <div class="SizeChooser">-->
+        <!--                        <span id="md-table-info">选择Table的行列</span>-->
+        <!--                        <table id="md-table-gen-chooser" ref="md-table-gen-chooser">-->
+        <!--                          <tbody>-->
+        <!--                            <tr v-for="row in tableSize[0]">-->
+        <!--                              <td-->
+        <!--                                  v-for="cell in tableSize[1]"-->
+        <!--                                  :ref="'md-table-cell-row-' + row + '-cell-' + cell"-->
+        <!--                                  @mouseenter="hoverTableCell(row, cell)"-->
+        <!--                                  @click="insertTable(row, cell)"-->
+        <!--                              ></td>-->
+        <!--                            </tr>-->
+        <!--                          </tbody>-->
+        <!--                        </table>-->
+        <!--                      </div>-->
+        <!--                    </div>-->
+        <!--                  </div>-->
+        <!--                  <button slot="reference" type="button">-->
+        <!--                    <svg-->
+        <!--                        t="1628759217740"-->
+        <!--                        class="icon"-->
+        <!--                        viewBox="0 0 1024 1024"-->
+        <!--                        version="1.1"-->
+        <!--                        xmlns="http://www.w3.org/2000/svg"-->
+        <!--                        p-id="2162"-->
+        <!--                        width="16"-->
+        <!--                        height="16"-->
+        <!--                    >-->
+        <!--                      <path-->
+        <!--                          d="M918.016 119.986H105.984c-23.197 0-42.002 18.803-42.002 42v700.029c0 23.196 18.805 42 42.002 42h812.032c23.195 0 42.002-18.803 42.002-42V161.986c0-23.197-18.807-42-42.002-42z m0 168.005v164.135H675.339V287.991H918.016zM390.661 657.474V494.127h242.677v163.347H390.661z m242.678 42.002v162.538H390.661V699.476h242.678zM348.66 657.474H105.983V494.127H348.66v163.347z m284.679-369.483v164.135H390.661V287.991h242.678z m42 206.136h242.677v163.347H675.339V494.127zM399.996 161.986c23.197 0 42.002 18.803 42.002 42.003 0 23.196-18.805 42-42.002 42s-42.003-18.803-42.003-42c0-23.199 18.806-42.003 42.003-42.003z m-126.005 0c23.195 0 42.002 18.803 42.002 42.003 0 23.196-18.806 42-42.002 42-23.198 0-42.003-18.803-42.003-42 0.001-23.199 18.805-42.003 42.003-42.003z m-126.005 0c23.195 0 42.002 18.803 42.002 42.003 0 23.196-18.806 42-42.002 42-23.198 0-42.003-18.803-42.003-42 0.001-23.199 18.805-42.003 42.003-42.003z m0 126.005H348.66v164.135H105.983l0.001-164.135h42.002z m-42.002 411.485h242.677v162.538H105.984V699.476z m569.355 162.538V699.476h242.677v162.538H675.339z"-->
+        <!--                          fill=""-->
+        <!--                          p-id="2163"-->
+        <!--                      ></path>-->
+        <!--                    </svg>-->
+        <!--                  </button>-->
+        <!--                </ep-popover>-->
+         <Popover style="display: inline-block" type="button">
+          <!-- 这是表格生成器部分 -->
+           <div id="md-table-gen-wrap" class="table_size_chooser">
+            <div class="SizeChooser">
+              <div id="md-table-info">选择Table的行列</div>
+              <table id="md-table-gen-chooser">
+                <tbody>
+                  <tr v-for="row in tableSize[0]" :key="row">
+                    <td
+                        v-for="cell in tableSize[1]"
+                        :key="cell"
+                        @mouseenter="hoverTableCell(row, cell)"
+                        @click="insertTable(row, cell)"
+                        :class="getCellClass(row, cell)"
+                    ></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+           <template #reference>
+            <button type="button">
+              <svg
+                  t="1628759217740"
+                  class="icon"
+                  viewBox="0 0 1024 1024"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  p-id="2162"
+                  width="16"
+                  height="16"
+              >
+                <path
+                    d="M918.016 119.986H105.984c-23.197 0-42.002 18.803-42.002 42v700.029c0 23.196 18.805 42 42.002 42h812.032c23.195 0 42.002-18.803 42.002-42V161.986c0-23.197-18.807-42-42.002-42z m0 168.005v164.135H675.339V287.991H918.016zM390.661 657.474V494.127h242.677v163.347H390.661z m242.678 42.002v162.538H390.661V699.476h242.678zM348.66 657.474H105.983V494.127H348.66v163.347z m284.679-369.483v164.135H390.661V287.991h242.678z m42 206.136h242.677v163.347H675.339V494.127zM399.996 161.986c23.197 0 42.002 18.803 42.002 42.003 0 23.196-18.805 42-42.002 42s-42.003-18.803-42.003-42c0-23.199 18.806-42.003 42.003-42.003z m-126.005 0c23.195 0 42.002 18.803 42.002 42.003 0 23.196-18.806 42-42.002 42-23.198 0-42.003-18.803-42.003-42 0.001-23.199 18.805-42.003 42.003-42.003z m-126.005 0c23.195 0 42.002 18.803 42.002 42.003 0 23.196-18.806 42-42.002 42-23.198 0-42.003-18.803-42.003-42 0.001-23.199 18.805-42.003 42.003-42.003z m0 126.005H348.66v164.135H105.983l0.001-164.135h42.002z m-42.002 411.485h242.677v162.538H105.984V699.476z m569.355 162.538V699.476h242.677v162.538H675.339z"
+                    fill=""
+                    p-id="2163"
+                ></path>
+              </svg>
+            </button>
+          </template>
+        </Popover>
+        <colorPicker v-model="color" v-on:change="handleColorChange"/>
+        <button @click="deleteFormat" type="button">
+<!--                    清除样式-->
+          <svg
+              t="1640141890477"
+              class="icon"
+              viewBox="0 0 1024 1024"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              p-id="2896"
+              width="14"
+              height="14"
+          >
+            <path
+                d="M876.564398 512.149985h30.697002c7.699248 0 15.398496 0 22.997754-2.599746 33.296748-8.999121 46.095498-43.495752 37.096378-104.889757-3.799629-28.197246-24.297627-46.095498-54.99463-46.095498H614.290011v-24.297627c0-65.293624-3.799629-130.487257 0-195.780881C616.889757 75.792598 589.992384 18.198223 537.49751 2.899717c-15.398496-3.799629-38.39625-3.799629-51.195 0C458.105263 13.098721 421.008886 39.996094 413.409628 79.692218c-2.599746 12.79875-3.799629 24.297627-3.799629 35.796504v243.076262H113.938873c-40.896006 0-60.094131 19.198125-60.094131 61.394004v7.699249c0 72.892882 7.699248 80.59213 80.592129 84.491748 2.599746 0 6.399375 1.299873 10.199004 1.299873-28.197246 145.885753-56.294502 290.471634-86.991504 435.057514-7.699248 35.796504 0 62.693878 30.697002 75.492628h844.417537c29.397129-12.79875 38.39625-38.39625 31.996876-72.892882-30.597012-145.985744-58.794258-290.571624-88.191388-438.957133zM509.300264 54.094717c31.996875 0 52.494874 22.997754 52.494873 61.394005 0 74.192755 1.299873 147.185626 1.299873 221.378381v21.797871H459.405136V115.488722c0-37.096377 19.198125-60.194122 49.895128-61.394005zM102.439996 460.954985v-51.195001h818.820037V460.954985H102.439996z m200.880383 511.750024c8.999121-63.993751 17.898252-133.087003 26.897373-199.580509 1.299873-11.498877 2.599746-21.797871 3.799629-31.996876 1.299873-15.398496-3.799629-28.197246-19.198125-30.697002-17.898252-2.599746-28.197246 6.399375-30.697002 22.997754-6.399375 42.195879-11.498877 83.191876-17.898252 125.387755-3.799629 37.096377-8.999121 75.492628-14.098624 113.888878H103.739869c33.296748-153.585001 66.493506-307.070013 101.090128-460.655014h610.340397c33.296748 153.585001 66.493506 307.070013 101.090127 460.655014h-612.940142z"
+                p-id="2897"
+            ></path>
+          </svg>
+        </button>
       </span>
       <span class="ql-formats">
         <button class="ql-indent" value="+1" type="button"></button>
@@ -194,14 +231,10 @@ import './css/highlight.css'
 import './css/quillFont.css'
 import './css/quillTable.css'
 import Quill from 'quill'
-
-// 组件库
-import "ep-ui/theme/lib/ionicons2/ionicons2.min.css"  // 旧图标库。必须，message等组件及老项目用到了
 import Vue from 'vue'
-import epui from "ep-ui";
 import vcolorpicker from 'vcolorpicker';
+import Popover from "./Component/Popover";
 
-Vue.use(epui)
 Vue.use(vcolorpicker)
 
 // 注册自定义插件
@@ -212,6 +245,7 @@ initEpEditor(Quill)
 
 export default {
   name: "vue2-quill2-editor",
+  components: {Popover},
   props: {
     uploadFunction: {
       type: Function,
@@ -227,6 +261,7 @@ export default {
     return {
       quill: {},
       tableSize: [10, 10],
+      selectedSize: {rows: 0, cols: 0}, // 记录用户选择的大小
       color: '#ff0000',
     }
   },
@@ -266,6 +301,17 @@ export default {
     this.$emit('ready', this.quill)
   },
   methods: {
+    hoverTableCell(row, cell) {
+      // 处理鼠标悬停逻辑，更新选择的大小
+      this.selectedSize.rows = row;
+      this.selectedSize.cols = cell;
+    },
+    getCellClass(row, cell) {
+      // 根据当前悬停位置动态添加样式
+      return {
+        selected: row <= this.selectedSize.rows && cell <= this.selectedSize.cols,
+      };
+    },
     triggerUpload() {
       this.$refs.fileInput.click();
     },
@@ -282,23 +328,23 @@ export default {
         this.quill.removeFormat(range.index, range.length, 'api')
       }
     },
-    hoverTableCell(row, cell) {
-      // 清除之前赋予的color
-      for (let r = 0; r < this.tableSize[0]; r++) {
-        for (let c = 0; c < this.tableSize[1]; c++) {
-          this.$refs[`md-table-cell-row-${(r + 1).toString()}-cell-${(c + 1).toString()}`].forEach(v => {
-            v.bgColor = ''
-          })
-        }
-      }
-      for (let r = 0; r < row; r++) {
-        for (let c = 0; c < cell; c++) {
-          this.$refs[`md-table-cell-row-${(r + 1).toString()}-cell-${(c + 1).toString()}`].forEach(v => {
-            v.bgColor = '#DEF;'
-          })
-        }
-      }
-    },
+    // hoverTableCell(row, cell) {
+    //   // 清除之前赋予的color
+    //   for (let r = 0; r < this.tableSize[0]; r++) {
+    //     for (let c = 0; c < this.tableSize[1]; c++) {
+    //       this.$refs[`md-table-cell-row-${(r + 1).toString()}-cell-${(c + 1).toString()}`].forEach(v => {
+    //         v.bgColor = ''
+    //       })
+    //     }
+    //   }
+    //   for (let r = 0; r < row; r++) {
+    //     for (let c = 0; c < cell; c++) {
+    //       this.$refs[`md-table-cell-row-${(r + 1).toString()}-cell-${(c + 1).toString()}`].forEach(v => {
+    //         v.bgColor = '#DEF;'
+    //       })
+    //     }
+    //   }
+    // },
     insertTable(val1, val2) {
       let tableModule = this.quill.getModule('better-table')
       tableModule.insertTable(val1, val2)
@@ -309,5 +355,27 @@ export default {
 </script>
 
 <style scoped>
+.table_size_chooser {
+  padding: 10px;
+}
 
+.SizeChooser table {
+  border-spacing: 2px;
+}
+
+.SizeChooser td {
+  width: 20px;
+  height: 20px;
+  background-color: #e3e3e3;
+  border: 1px solid #ccc;
+}
+
+.SizeChooser td.selected {
+  background-color: #DEF;
+}
+
+/deep/.colorBtn{
+  margin: 1px;
+  cursor: pointer;
+}
 </style>
