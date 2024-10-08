@@ -69,46 +69,7 @@
         <button class="ql-list" value="bullet" type="button"></button>
       </span>
       <span class="ql-formats">
-<!--        <ep-popover ref="tableGenerator" placement="bottom" width="250" trigger="hover">-->
-        <!--                  <div>-->
-        <!--                    <div id="md-table-gen-wrap" class="table_size_chooser" ref="md-table-gen-wrap">-->
-        <!--                      <div class="SizeChooser">-->
-        <!--                        <span id="md-table-info">选择Table的行列</span>-->
-        <!--                        <table id="md-table-gen-chooser" ref="md-table-gen-chooser">-->
-        <!--                          <tbody>-->
-        <!--                            <tr v-for="row in tableSize[0]">-->
-        <!--                              <td-->
-        <!--                                  v-for="cell in tableSize[1]"-->
-        <!--                                  :ref="'md-table-cell-row-' + row + '-cell-' + cell"-->
-        <!--                                  @mouseenter="hoverTableCell(row, cell)"-->
-        <!--                                  @click="insertTable(row, cell)"-->
-        <!--                              ></td>-->
-        <!--                            </tr>-->
-        <!--                          </tbody>-->
-        <!--                        </table>-->
-        <!--                      </div>-->
-        <!--                    </div>-->
-        <!--                  </div>-->
-        <!--                  <button slot="reference" type="button">-->
-        <!--                    <svg-->
-        <!--                        t="1628759217740"-->
-        <!--                        class="icon"-->
-        <!--                        viewBox="0 0 1024 1024"-->
-        <!--                        version="1.1"-->
-        <!--                        xmlns="http://www.w3.org/2000/svg"-->
-        <!--                        p-id="2162"-->
-        <!--                        width="16"-->
-        <!--                        height="16"-->
-        <!--                    >-->
-        <!--                      <path-->
-        <!--                          d="M918.016 119.986H105.984c-23.197 0-42.002 18.803-42.002 42v700.029c0 23.196 18.805 42 42.002 42h812.032c23.195 0 42.002-18.803 42.002-42V161.986c0-23.197-18.807-42-42.002-42z m0 168.005v164.135H675.339V287.991H918.016zM390.661 657.474V494.127h242.677v163.347H390.661z m242.678 42.002v162.538H390.661V699.476h242.678zM348.66 657.474H105.983V494.127H348.66v163.347z m284.679-369.483v164.135H390.661V287.991h242.678z m42 206.136h242.677v163.347H675.339V494.127zM399.996 161.986c23.197 0 42.002 18.803 42.002 42.003 0 23.196-18.805 42-42.002 42s-42.003-18.803-42.003-42c0-23.199 18.806-42.003 42.003-42.003z m-126.005 0c23.195 0 42.002 18.803 42.002 42.003 0 23.196-18.806 42-42.002 42-23.198 0-42.003-18.803-42.003-42 0.001-23.199 18.805-42.003 42.003-42.003z m-126.005 0c23.195 0 42.002 18.803 42.002 42.003 0 23.196-18.806 42-42.002 42-23.198 0-42.003-18.803-42.003-42 0.001-23.199 18.805-42.003 42.003-42.003z m0 126.005H348.66v164.135H105.983l0.001-164.135h42.002z m-42.002 411.485h242.677v162.538H105.984V699.476z m569.355 162.538V699.476h242.677v162.538H675.339z"-->
-        <!--                          fill=""-->
-        <!--                          p-id="2163"-->
-        <!--                      ></path>-->
-        <!--                    </svg>-->
-        <!--                  </button>-->
-        <!--                </ep-popover>-->
-         <Popover style="display: inline-block" type="button">
+         <Popover style="display: inline-block" type="button" ref="tableGenerator">
           <!-- 这是表格生成器部分 -->
            <div id="md-table-gen-wrap" class="table_size_chooser">
             <div class="SizeChooser">
@@ -117,11 +78,11 @@
                 <tbody>
                   <tr v-for="row in tableSize[0]" :key="row">
                     <td
+                        :ref="'md-table-cell-row-' + row + '-cell-' + cell"
                         v-for="cell in tableSize[1]"
                         :key="cell"
                         @mouseenter="hoverTableCell(row, cell)"
                         @click="insertTable(row, cell)"
-                        :class="getCellClass(row, cell)"
                     ></td>
                   </tr>
                 </tbody>
@@ -149,7 +110,7 @@
             </button>
           </template>
         </Popover>
-        <colorPicker v-model="color" v-on:change="handleColorChange"/>
+        <colorPicker v-model="color" @change="handleColorChange"/>
         <button @click="deleteFormat" type="button">
 <!--                    清除样式-->
           <svg
@@ -232,8 +193,8 @@ import './css/quillFont.css'
 import './css/quillTable.css'
 import Quill from 'quill'
 import Vue from 'vue'
-import vcolorpicker from 'vcolorpicker';
 import Popover from "./Component/Popover";
+import vcolorpicker from 'vcolorpicker';
 
 Vue.use(vcolorpicker)
 
@@ -261,7 +222,6 @@ export default {
     return {
       quill: {},
       tableSize: [10, 10],
-      selectedSize: {rows: 0, cols: 0}, // 记录用户选择的大小
       color: '#ff0000',
     }
   },
@@ -301,17 +261,6 @@ export default {
     this.$emit('ready', this.quill)
   },
   methods: {
-    hoverTableCell(row, cell) {
-      // 处理鼠标悬停逻辑，更新选择的大小
-      this.selectedSize.rows = row;
-      this.selectedSize.cols = cell;
-    },
-    getCellClass(row, cell) {
-      // 根据当前悬停位置动态添加样式
-      return {
-        selected: row <= this.selectedSize.rows && cell <= this.selectedSize.cols,
-      };
-    },
     triggerUpload() {
       this.$refs.fileInput.click();
     },
@@ -328,23 +277,23 @@ export default {
         this.quill.removeFormat(range.index, range.length, 'api')
       }
     },
-    // hoverTableCell(row, cell) {
-    //   // 清除之前赋予的color
-    //   for (let r = 0; r < this.tableSize[0]; r++) {
-    //     for (let c = 0; c < this.tableSize[1]; c++) {
-    //       this.$refs[`md-table-cell-row-${(r + 1).toString()}-cell-${(c + 1).toString()}`].forEach(v => {
-    //         v.bgColor = ''
-    //       })
-    //     }
-    //   }
-    //   for (let r = 0; r < row; r++) {
-    //     for (let c = 0; c < cell; c++) {
-    //       this.$refs[`md-table-cell-row-${(r + 1).toString()}-cell-${(c + 1).toString()}`].forEach(v => {
-    //         v.bgColor = '#DEF;'
-    //       })
-    //     }
-    //   }
-    // },
+    hoverTableCell(row, cell) {
+      // 清除之前赋予的color
+      for (let r = 0; r < this.tableSize[0]; r++) {
+        for (let c = 0; c < this.tableSize[1]; c++) {
+          this.$refs[`md-table-cell-row-${(r + 1).toString()}-cell-${(c + 1).toString()}`].forEach(v => {
+            v.style = ''
+          })
+        }
+      }
+      for (let r = 0; r < row; r++) {
+        for (let c = 0; c < cell; c++) {
+          this.$refs[`md-table-cell-row-${(r + 1).toString()}-cell-${(c + 1).toString()}`].forEach(v => {
+            v.style = 'background:#DEF'
+          })
+        }
+      }
+    },
     insertTable(val1, val2) {
       let tableModule = this.quill.getModule('better-table')
       tableModule.insertTable(val1, val2)
@@ -366,15 +315,10 @@ export default {
 .SizeChooser td {
   width: 20px;
   height: 20px;
-  background-color: #e3e3e3;
   border: 1px solid #ccc;
 }
 
-.SizeChooser td.selected {
-  background-color: #DEF;
-}
-
-/deep/.colorBtn{
+/deep/ .colorBtn {
   margin: 1px;
   cursor: pointer;
 }

@@ -3,7 +3,7 @@ import vcolorpicker from 'vcolorpicker';
 
 const MyComponent = {
     install(Vue) {
-        // 自动注册插件
+        // 注册插件
         Vue.use(vcolorpicker);
 
         // 注册组件
