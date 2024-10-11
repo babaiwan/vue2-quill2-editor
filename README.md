@@ -1,43 +1,53 @@
 ## How to use
-```
+```js
 <template>
   <div class="demo">
     <vue2-quill2-editor
+      ref="vue2Quill2Editor"
       :upload-function="uploadFunction"
-      :upload-response-handlers="uploadResponseHandlers"
     >
     </vue2-quill2-editor>
+    <CmsJournal></CmsJournal>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios'
 import Vue from 'vue'
 import Editor from 'vue2-quill2-editor/dist/index'
-
 Vue.use(Editor)
 
 export default {
   components: {Editor},
-  data() {
+  data () {
     return {}
   },
   methods: {
-    uploadFunction(formData) {
+    uploadFunction (range, fileList) {
       const headers = {
         'eptoken': '7856456e-7b5d-4f3a-be37-a98d0ba51d8d',
         'Content-Type': 'application/json'
       }
 
-      // 业务字段(按需添加)
-      formData.append("linkId", "999"); // 示例 linkId
-      formData.append("linkType", "journal"); // 示例 linkType
-      formData.append("inText", 1); // 示例 inText
+      let file = fileList[0]
+      const fileName = file.name.toString()
 
-      return axios.post('http://localhost:8090/file/upload', formData, {headers})
-    },
-    uploadResponseHandlers(val) {
-      return val.data.data   // return where is the url
+      // 使用FormData构建请求
+      const formData = new FormData()
+      formData.append('file', file) // 添加文件
+      formData.append('fileName', fileName)
+      formData.append('linkId', '999')        //  示例字段
+      formData.append('linkType', 'journal') //  示例字段
+      formData.append('inText', 1)           // 示例字段
+
+      axios.post('http://localhost:8090/file/upload', formData, {headers}).then(json => {
+        const Delta = this.$refs.vue2Quill2Editor.quill.constructor.import('delta'); // 使用构造函数访问
+
+        // 下面三行必填
+        const cursorPosition = this.$refs.vue2Quill2Editor.quill.getSelection().index
+        this.$refs.vue2Quill2Editor.quill.updateContents(new Delta().retain(cursorPosition).insert({image: json.data.data}))
+        this.$refs.vue2Quill2Editor.quill.setSelection(cursorPosition + 1, 0)
+      })
     }
   }
 }
@@ -63,5 +73,6 @@ a {
   color: #42b983;
 }
 </style>
+
 
 ```

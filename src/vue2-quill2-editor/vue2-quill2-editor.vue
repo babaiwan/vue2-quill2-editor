@@ -212,10 +212,6 @@ export default {
       type: Function,
       required: false
     },
-    uploadResponseHandlers: {
-      type: Function,
-      required: false
-    },
     value: String,
   },
   data() {
@@ -225,30 +221,14 @@ export default {
       color: '#ff0000',
     }
   },
+
   mounted() {
     let vm = this
-    defaultOption.modules.uploader = {
-      handler: (range, fileList) => {
-        let file = fileList[0]
-        return new Promise((resolve, reject) => {
-          const fileName = file.name.toString()
 
-          // 使用FormData构建请求
-          const formData = new FormData();
-          formData.append("file", file); // 添加文件
-          formData.append("fileName", fileName);
+    defaultOption.modules.uploader.handler = vm.uploadFunction
 
-          vm.uploadFunction(formData).then(json => {
-            const Delta = Quill.import('delta')
-            const cursorPosition = vm.quill.getSelection().index
-            vm.quill.updateContents(new Delta().retain(cursorPosition).insert({image: vm.uploadResponseHandlers(json)}));
-            vm.quill.setSelection(cursorPosition + 1, 0)
-          })
-
-        })
-      }
-    }
     this.quill = new Quill('#editor', defaultOption);
+
     this.quill.enable(false)
 
     // Set editor content
@@ -258,6 +238,7 @@ export default {
 
     // Emit ready event
     this.quill.enable(true)
+
     this.$emit('ready', this.quill)
   },
   methods: {
