@@ -225,7 +225,11 @@ export default {
   mounted() {
     let vm = this
 
-    defaultOption.modules.uploader.handler = vm.uploadFunction
+    defaultOption.modules.uploader = {
+      handler: (range, fileList) => {
+        vm.uploadFunction(range,fileList)
+      }
+    }
 
     this.quill = new Quill('#editor', defaultOption);
 
