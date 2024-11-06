@@ -214,6 +214,11 @@ export default {
     },
     value: String,
   },
+  watch:{
+    value(val){
+      this.quill.clipboard.dangerouslyPasteHTML(val)
+    }
+  },
   data() {
     return {
       quill: {},
@@ -221,7 +226,6 @@ export default {
       color: '#ff0000',
     }
   },
-
   mounted() {
     let vm = this
 
