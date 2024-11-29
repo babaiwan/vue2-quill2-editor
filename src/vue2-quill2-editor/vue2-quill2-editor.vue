@@ -175,10 +175,10 @@
           </svg>
         </button>
       </span>
-      <span class="ql-formats" style="min-width: 120px; position: relative">
-        <button style="min-width: 45px;" @click="triggerUpload">附件</button>
-        <input type="file" ref="fileInput" style="display: none;" @change="handleFileChange">
-      </span>
+<!--      <span class="ql-formats" style="min-width: 120px; position: relative">-->
+<!--        <button style="min-width: 45px;" @click="triggerUpload">附件</button>-->
+<!--        <input type="file" ref="fileInput" style="display: none;" @change="handleFileChange">-->
+<!--      </span>-->
     </div>
     <div id="editor">
     </div>
