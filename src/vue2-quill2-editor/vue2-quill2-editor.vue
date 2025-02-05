@@ -175,10 +175,10 @@
           </svg>
         </button>
       </span>
-<!--      <span class="ql-formats" style="min-width: 120px; position: relative">-->
-<!--        <button style="min-width: 45px;" @click="triggerUpload">附件</button>-->
-<!--        <input type="file" ref="fileInput" style="display: none;" @change="handleFileChange">-->
-<!--      </span>-->
+      <!--      <span class="ql-formats" style="min-width: 120px; position: relative">-->
+      <!--        <button style="min-width: 45px;" @click="triggerUpload">附件</button>-->
+      <!--        <input type="file" ref="fileInput" style="display: none;" @change="handleFileChange">-->
+      <!--      </span>-->
     </div>
     <div id="editor">
     </div>
@@ -214,14 +214,34 @@ export default {
     },
     value: String,
   },
-  watch:{
-    value(val){
-      this.quill.clipboard.dangerouslyPasteHTML(val)
+  watch: {
+    // 双向绑定 如果传入的值发生了改变,对应的影响编辑器的显示
+    value(newVal, oldVal) {
+      if (this.quill) {
+        if (newVal && newVal !== this._content) {
+          this._content = newVal
+          this.quill.clipboard.dangerouslyPasteHTML(newVal)
+        } else if (!newVal) {
+          this.quill.setText('')
+        }
+      }
+    },
+    // 双向绑定 如果编辑器的值发生了改变 则对应的影响绑定的value
+    content(newVal, oldVal) {
+      if (this.quill) {
+        if (newVal && newVal !== this._content) {
+          this._content = newVal
+          this.quill.clipboard.dangerouslyPasteHTML(newVal)
+        } else if (!newVal) {
+          this.quill.setText('')
+        }
+      }
     }
   },
   data() {
     return {
       quill: {},
+      _content: '',
       tableSize: [10, 10],
       color: '#ff0000',
     }
@@ -231,7 +251,7 @@ export default {
 
     defaultOption.modules.uploader = {
       handler: (range, fileList) => {
-        vm.uploadFunction(range,fileList)
+        vm.uploadFunction(range, fileList)
       }
     }
 
@@ -246,6 +266,16 @@ export default {
 
     // Emit ready event
     this.quill.enable(true)
+
+    // 双向绑定,如果修改了编辑器的值,那么绑定的值也要发生变化
+    this.quill.on('text-change', (delta, oldDelta, source) => {
+      let html = vm.quill.getSemanticHTML(0)
+      const quill = vm.quill
+      const text = vm.quill.getText()
+      vm._content = html
+      vm.$emit('input', vm._content)
+      vm.$emit('change', {html, text, quill})
+    });
 
     this.$emit('ready', this.quill)
   },
