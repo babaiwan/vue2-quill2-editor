@@ -38,5 +38,9 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/babaiwan/vue2-quill2-editor"
   }
 }
