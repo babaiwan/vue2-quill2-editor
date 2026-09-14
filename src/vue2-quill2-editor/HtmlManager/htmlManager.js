@@ -89,9 +89,10 @@ class HtmlManager extends Module {
         }
 
         // Remove the toolbar
-        if (this.toolbar.domNode) {
-            this.htmlBlock.removeChild(this.toolbar.domNode)
+        if (this.toolbar && this.toolbar.domNode && this.toolbar.domNode.parentNode) {
+            this.toolbar.domNode.parentNode.removeChild(this.toolbar.domNode)
         }
+        this.toolbar = undefined
 
 
         // Remove the overlay

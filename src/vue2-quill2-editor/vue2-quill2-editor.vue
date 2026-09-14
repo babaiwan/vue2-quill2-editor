@@ -118,10 +118,24 @@
         <button class="ql-indent" value="-1" type="button"></button>
         <button class="ql-link" type="button"></button>
       </span>
+      <span class="ql-formats">
+        <button class="ql-html" type="button" title="插入/编辑 HTML">
+          <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+            <path d="M204 160h616c22.1 0 40 17.9 40 40v624c0 22.1-17.9 40-40 40H204c-22.1 0-40-17.9-40-40V200c0-22.1 17.9-40 40-40z m40 80v544h536V240H244z m96 120l-72 84 72 84-30 26-96-110 96-110 30 26z m204 0l30-26 96 110-96 110-30-26 72-84-72-84z m-98-30l56 16-60 220-56-16 60-220z" fill="currentColor"></path>
+          </svg>
+        </button>
+      </span>
     </div>
     <div id="editor">
     </div>
 
+    <html-edit-modal
+        :visible="htmlModalVisible"
+        :html-content="htmlModalContent"
+        :title="htmlModalTitle"
+        @confirm="handleHtmlConfirm"
+        @close="closeHtmlModal"
+    />
   </div>
 </template>
 
@@ -133,19 +147,20 @@ import './css/quillTable.css'
 import Quill from 'quill'
 import Vue from 'vue'
 import Popover from "./Component/Popover";
+import HtmlEditModal from "./HtmlManager/htmlEditModal";
 import vcolorpicker from 'vcolorpicker';
 
 Vue.use(vcolorpicker)
 
 // 注册自定义插件
-import {initEpEditor, defaultOption} from "./quillRegister";
+import {initEpEditor, createOptions} from "./quillRegister";
 // import axios from "axios";
 
 initEpEditor(Quill)
 
 export default {
   name: "vue2-quill2-editor",
-  components: {Popover},
+  components: {Popover, HtmlEditModal},
   props: {
     uploadFunction: {
       type: Function,
@@ -183,18 +198,38 @@ export default {
       _content: '',
       tableSize: [10, 10],
       color: '#ff0000',
+      // html 编辑弹窗状态
+      htmlModalVisible: false,
+      htmlModalContent: '',
+      htmlModalTitle: '插入 HTML',
+      // 当前正在编辑的 html-embed 节点（为空表示新增）
+      editingHtmlBlock: null,
+      // 最后一次有效光标位置
+      lastRange: null,
     }
   },
   mounted() {
     let vm = this
 
-    defaultOption.modules.uploader = {
-      handler: (range, fileList) => {
-        vm.uploadFunction(range, fileList)
+    // 每个实例使用独立配置，避免互相覆盖
+    const options = createOptions()
+
+    if (typeof this.uploadFunction === 'function') {
+      options.modules.uploader = {
+        handler: (range, fileList) => {
+          vm.uploadFunction(range, fileList)
+        }
       }
     }
 
-    this.quill = new Quill('#editor', defaultOption);
+    this.quill = new Quill('#editor', options);
+
+    // 记录最后一次有效的光标位置，供插入 html 时定位
+    this.quill.on('selection-change', (range) => {
+      if (range) {
+        vm.lastRange = range
+      }
+    })
 
     this.quill.enable(false)
 
@@ -215,6 +250,12 @@ export default {
       vm.$emit('input', vm._content)
       vm.$emit('change', {html, text, quill})
     });
+
+    // 暴露给 toolbar（ql-html 按钮）与 htmlManager 浮动工具栏的入口：
+    // 不传参数 => 新增；传入 html-embed 节点 => 编辑
+    this.quill.openHtmlEditor = (domNode) => {
+      vm.openHtmlModal(domNode)
+    }
 
     this.$emit('ready', this.quill)
   },
@@ -250,6 +291,62 @@ export default {
       let tableModule = this.quill.getModule('better-table')
       tableModule.insertTable(val1, val2)
       this.$refs.tableGenerator.showPopper = false
+    },
+    /**
+     * 打开 html 编辑弹窗
+     * @param domNode 传入已有 html-embed 节点表示编辑，否则为新增
+     */
+    openHtmlModal(domNode) {
+      if (!this.quill) return
+      if (domNode) {
+        this.editingHtmlBlock = domNode
+        this.htmlModalTitle = '编辑 HTML'
+        this.htmlModalContent = domNode.innerHTML
+        // 关闭 htmlManager 自带的浮层
+        if (this.quill.htmlManager) {
+          this.quill.htmlManager.hideOverlay()
+        }
+      } else {
+        this.editingHtmlBlock = null
+        this.htmlModalTitle = '插入 HTML'
+        this.htmlModalContent = ''
+      }
+      this.htmlModalVisible = true
+    },
+    closeHtmlModal() {
+      this.htmlModalVisible = false
+      this.editingHtmlBlock = null
+    },
+    handleHtmlConfirm(html) {
+      this.htmlModalVisible = false
+      if (!this.quill) return
+
+      const text = (html || '').trim()
+      let index
+
+      if (this.editingHtmlBlock) {
+        // 编辑已有的 html 块：先定位并删除原节点，再在相同位置插入新内容
+        const blot = Quill.find(this.editingHtmlBlock)
+        index = blot ? this.quill.getIndex(blot) : this.quill.getLength()
+        this.editingHtmlBlock = null
+        this.quill.deleteText(index, 1, 'user')
+      } else {
+        index = this.lastRange ? this.lastRange.index : this.quill.getLength()
+      }
+
+      if (!text) {
+        this.quill.setSelection(index, 0, 'user')
+        return
+      }
+
+      // 包装为 html-embed 块，便于再次点击编辑 / 整体删除
+      const blob = /class\s*=\s*["'][^"']*html-embed/i.test(text)
+          ? text
+          : `<div class="html-embed">${text}</div>`
+
+      this.quill.setSelection(index, 0, 'silent')
+      this.quill.clipboard.dangerouslyPasteHTML(index, blob, 'user')
+      this.quill.setSelection(index + 1, 0, 'silent')
     },
   }
 }

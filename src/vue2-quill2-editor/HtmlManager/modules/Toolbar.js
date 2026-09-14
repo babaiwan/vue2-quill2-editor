@@ -61,12 +61,18 @@ export class Toolbar {
         innerDiv.appendChild(htmlButton)
         this.domNode.appendChild(container)
 
-        htmlButton.addEventListener('click',()=>{
-            console.log('htmlManager:')
-            console.log(this.htmlManager)
-            this.htmlManager.htmlBlock.removeChild(this.domNode)
+        htmlButton.addEventListener('click', (evt) => {
+            // 阻止冒泡，避免再次触发 quill.root 上的 clickHtmlBlock 重新弹出浮层
+            evt.stopPropagation()
+            const htmlBlock = this.htmlManager.htmlBlock
+            if (this.domNode && this.domNode.parentNode) {
+                this.domNode.parentNode.removeChild(this.domNode)
+            }
             this.domNode = undefined
-            this.htmlManager.quill.openHtmlEditor(this.htmlManager.htmlBlock.innerHTML)
+            // 交给宿主组件打开编辑弹窗（由 vue2-quill2-editor 注入）
+            if (typeof this.htmlManager.quill.openHtmlEditor === 'function') {
+                this.htmlManager.quill.openHtmlEditor(htmlBlock)
+            }
         })
     }
 

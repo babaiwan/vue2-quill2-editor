@@ -1,1 +1,20 @@
+# 日志与临时文件
 *.log
+npm-debug.log*
+
+# 开发与调试目录
+dev/
+test/
+tests/
+
+# 构建 / 配置文件（无需下发给使用者）
+webpack.config.js
+rollup.config.js
+.babelrc
+.npmrc
+.gitignore
+
+# 编辑器与 IDE
+.idea/
+.vscode/
+*.iml

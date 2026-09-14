@@ -1,13 +1,34 @@
 {
   "name": "vue2-quill2-editor",
-  "version": "1.0.64",
-  "description": "",
+  "version": "1.0.68",
+  "description": "A rich text editor component for Vue 2 based on Quill 2, supporting tables, image upload/resize, color picker and custom HTML blocks.",
   "main": "src/index.js",
+  "unpkg": "dist/index.js",
+  "jsdelivr": "dist/index.js",
+  "files": [
+    "src",
+    "dist/index.js",
+    "dist/*.svg",
+    "dist/*.txt",
+    "README.md"
+  ],
   "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "serve": "webpack serve --config webpack.config.js"
+    "build": "webpack --config webpack.config.js --mode production",
+    "serve": "webpack serve --config webpack.config.js",
+    "prepack": "npm run build",
+    "login:npm": "npm login --registry=https://registry.npmjs.org/",
+    "publish:npm": "npm publish --registry=https://registry.npmjs.org/"
   },
-  "keywords": [],
+  "keywords": [
+    "vue",
+    "vue2",
+    "quill",
+    "quill2",
+    "editor",
+    "rich-text-editor",
+    "wysiwyg",
+    "html-editor"
+  ],
   "author": "",
   "license": "ISC",
   "peerDependencies": {
@@ -18,7 +39,6 @@
     "vue-template-compiler": "^2.7.16"
   },
   "devDependencies": {
-    "vcolorpicker": "^1.1.0",
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
     "@rollup/plugin-commonjs": "^28.0.0",
@@ -37,10 +57,11 @@
     "webpack-dev-server": "^5.1.0"
   },
   "dependencies": {
-    "@popperjs/core": "^2.11.8"
+    "@popperjs/core": "^2.11.8",
+    "vcolorpicker": "^1.1.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/babaiwan/vue2-quill2-editor"
+    "url": "git+https://github.com/babaiwan/vue2-quill2-editor.git"
   }
 }

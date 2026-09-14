@@ -86,13 +86,10 @@ function registerLinkBlot(Quill) {
 
     class linkBlock extends Inline {
         static create(value) {
-            console.log('createLink')
-            console.log(value)
             const node = super.create(value)
             node.setAttribute('href', this.sanitize(value))
             node.setAttribute('rel', 'noopener noreferrer')
             node.setAttribute('target', '_blank')
-            console.log(node)
             return node
         }
 
@@ -155,8 +152,15 @@ export const defaultOption = {
     boundary: document.body,
     modules: {
         toolbar: {
-            container: '#toolbar'
-            // handlers:handlers
+            container: '#toolbar',
+            handlers: {
+                // 插入 / 编辑 html 按钮，实际动作由宿主组件注入的 openHtmlEditor 完成
+                html: function () {
+                    if (this.quill && typeof this.quill.openHtmlEditor === 'function') {
+                        this.quill.openHtmlEditor()
+                    }
+                }
+            }
         },
         'better-table': {
             operationMenu: {
@@ -228,12 +232,37 @@ export const defaultOption = {
     readOnly: false
 }
 
+/**
+ * 生成一份独立的配置副本，避免多个编辑器实例共享同一个 defaultOption 对象，
+ * 造成 uploader handler 等被互相覆盖（同时只能有一个实例生效）。
+ * 为兼容旧用法，仍导出可变的 defaultOption。
+ */
+export function createOptions() {
+    return {
+        ...defaultOption,
+        modules: {
+            ...defaultOption.modules,
+            uploader: {
+                handler: function () {
+                    // do nothing
+                }
+            },
+            keyboard: {
+                bindings: {...bindings}
+            }
+        }
+    }
+}
+
 export function initEpEditor(Quill) {
     var icons = Quill.import('ui/icons');
     icons.align[''] = '<svg t="1709021933768" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5540" width="18" height="18"><path d="M674.082 192.05H92.062c-17.673 0-32 14.327-32 32s14.327 32 32 32h582.021c17.673 0 32-14.327 32-32s-14.328-32-32.001-32zM923.938 481.242H92.062c-17.673 0-32 14.327-32 32s14.327 32 32 32h831.877c17.673 0 32-14.327 32-32s-14.328-32-32.001-32zM673.938 767.726H92.062c-17.673 0-32 14.327-32 32s14.327 32 32 32h581.877c17.673 0 32-14.327 32-32s-14.328-32-32.001-32z" fill="" p-id="5541"></path></svg>'
     icons.align['center'] = '<svg t="1709021950245" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5714" width="18" height="18"><path d="M220.99 192.162h582.02c17.673 0 32 14.327 32 32s-14.327 32-32 32H220.99c-17.673 0-32-14.327-32-32s14.327-32 32-32zM96.062 481.354h831.877c17.673 0 32 14.327 32 32 0 17.673-14.327 32-32 32H96.062c-17.673 0-32-14.327-32-32 0-17.673 14.327-32 32-32zM221.062 767.838h581.877c17.673 0 32 14.327 32 32s-14.327 32-32 32H221.062c-17.673 0-32-14.327-32-32s14.327-32 32-32z" fill="" p-id="5715"></path></svg>'
     icons.align['right'] = '<svg t="1709021974345" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5922" width="18" height="18"><path d="M341.918 192.05h582.021c17.673 0 32 14.327 32 32s-14.327 32-32 32H341.918c-17.673 0-32-14.327-32-32s14.327-32 32-32zM92.062 481.242h831.877c17.673 0 32 14.327 32 32s-14.327 32-32 32H92.062c-17.673 0-32-14.327-32-32s14.327-32 32-32zM342.062 767.726h581.877c17.673 0 32 14.327 32 32s-14.327 32-32 32H342.062c-17.673 0-32-14.327-32-32s14.327-32 32-32z" fill="" p-id="5923"></path></svg>'
     icons.align['justify'] = '<svg t="1709021985591" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6130" width="18" height="18"><path d="M923.938 192.05H92.062c-17.673 0-32 14.327-32 32s14.327 32 32 32h831.877c17.673 0 32-14.327 32-32s-14.328-32-32.001-32zM923.938 481.242H92.062c-17.673 0-32 14.327-32 32s14.327 32 32 32h831.877c17.673 0 32-14.327 32-32s-14.328-32-32.001-32zM923.938 767.726H92.062c-17.673 0-32 14.327-32 32s14.327 32 32 32h831.877c17.673 0 32-14.327 32-32s-14.328-32-32.001-32z" fill="" p-id="6131"></path></svg>'
+
+    // 插入 / 编辑 html 按钮图标
+    icons['html'] = '<svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="18" height="18"><path d="M204 160h616c22.1 0 40 17.9 40 40v624c0 22.1-17.9 40-40 40H204c-22.1 0-40-17.9-40-40V200c0-22.1 17.9-40 40-40z m40 80v544h536V240H244z m96 120l-72 84 72 84-30 26-96-110 96-110 30 26z m204 0l30-26 96 110-96 110-30-26 72-84-72-84z m-98-30l56 16-60 220-56-16 60-220z" fill="currentColor"></path></svg>'
 
     registerImageBlot(Quill)
     registerImageUploader(Quill)

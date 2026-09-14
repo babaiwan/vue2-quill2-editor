@@ -1,0 +1,7 @@
+# 明确浏览器目标，确保 @babel/preset-env 会把 class fields / static fields
+# 等现代语法转译为 ES5，避免使用方（尤其 babel 配置较旧的 Vue2 项目）解析失败
+> 0.5%
+last 2 versions
+Firefox ESR
+not dead
+IE 11
